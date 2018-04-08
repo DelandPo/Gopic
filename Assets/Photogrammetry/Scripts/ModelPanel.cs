@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 public class ModelPanel : MonoBehaviour
 {
-    ModelImporter modelImporter;
-    ModelData modelData;
     public RawImage icon;
     public Text modelName;
     public Text userId;
@@ -18,15 +16,12 @@ public class ModelPanel : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        modelImporter = FindObjectOfType<ModelImporter>();
         rectTransform = GetComponent<RectTransform>();
         modelImgRectTransform = modelImg.GetComponent<RectTransform>();
     }
 
     public void populatePanel(ModelData model, Texture2D modelIcon)
     {
-        modelData = model;
-
         //Populate fields
         StartCoroutine(loadImage(model.PicturesUri));
         icon.texture = modelIcon;
@@ -44,22 +39,14 @@ public class ModelPanel : MonoBehaviour
 
             doneLoading = true;
             modelImg.texture = www.texture; //Get texture
-
+            
             //modelImg.GetComponent<AspectRatioFitter>().aspectRatio = www.texture.width / www.texture.height;
         }
-    }
-
-    public void importModel()
-    {
-        Debug.Log(modelImporter);
-        Debug.Log(modelData);
-        Debug.Log(modelData.ModelUri);
-        modelImporter.importModel(modelData.ModelUri);
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 }

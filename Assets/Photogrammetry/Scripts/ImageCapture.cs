@@ -321,7 +321,7 @@ public class ImageCapture : MonoBehaviour
         doneCapturingIcon.SetActive(false);
         createModelPanel.SetActive(false);
         creatingModel = true;
-        UploadImages.Instance.UploadImagesToFirebase(captureImage);
+        UploadImages.Instance.UploadImagesToFirebase(capturedImagePaths);
     }
 
     //Deletes any images taken and saved to the device when an application quits

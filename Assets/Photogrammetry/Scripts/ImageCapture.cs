@@ -57,7 +57,7 @@ public class ImageCapture : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        TrackerManager.Instance.GetTracker<ObjectTracker>().Stop(); //Disabling Vuforia object tracker
+        //TrackerManager.Instance.GetTracker<ObjectTracker>().Stop(); //Disabling Vuforia object tracker
         cameraBtn.gameObject.SetActive(false);
         aspectFit = imgViewer.GetComponent<AspectRatioFitter>();
         imgViewer.gameObject.SetActive(false);
@@ -321,6 +321,7 @@ public class ImageCapture : MonoBehaviour
         doneCapturingIcon.SetActive(false);
         createModelPanel.SetActive(false);
         creatingModel = true;
+        UploadImages.Instance.UploadImagesToFirebase(captureImage);
     }
 
     //Deletes any images taken and saved to the device when an application quits

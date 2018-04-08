@@ -9,5 +9,8 @@ EditorBuildSettings:
     path: Assets/Photogrammetry/Scenes/PhotogrammetryTest.unity
     guid: 039209437733cad44b546ab2a90f68e4
   - enabled: 1
+    path: Assets/Photogrammetry/Scenes/Visualization.unity
+    guid: 8c96a6904583d364babb0e67e1b31be2
+  - enabled: 1
     path: Assets/Photogrammetry/Scenes/Photogrammetry.unity
     guid: 9e6dfe6555b8ad1449d5f0c4dc6a0263

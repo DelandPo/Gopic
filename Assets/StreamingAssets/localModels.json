@@ -5,7 +5,7 @@
 {
 
 "ModelUri": 
-"Assets/TestObj/Horror_Axe/SM_HRR_Axe_01.obj",
+"TestObj/result.obj",
 
 "Name": "Violin",
 
@@ -22,7 +22,7 @@
 {
 
 "ModelUri": 
-"Assets/TestObj/Horror_Axe/SM_HRR_Axe_01.obj",
+"TestObj/result.obj",
 
 "Name": "Pepsi Bottle",
 
@@ -39,7 +39,7 @@
 {
 
 "ModelUri": 
-"Assets/TestObj/Horror_Axe/SM_HRR_Axe_01.obj",
+"TestObj/result.obj",
 
 "Name": "Water Bottle",
 

@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Photogrammetry/Scenes/Visualization.unity
     guid: 8c96a6904583d364babb0e67e1b31be2
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photogrammetry/Scenes/Photogrammetry.unity
     guid: 9e6dfe6555b8ad1449d5f0c4dc6a0263
+  - enabled: 1
+    path: Assets/Photogrammetry/Scenes/ImageCapturing.unity
+    guid: 3e5f82db3f23bbc47905ad1cc59b0cdb

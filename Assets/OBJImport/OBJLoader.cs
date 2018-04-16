@@ -38,7 +38,7 @@ public class OBJLoader
         {
             System.Diagnostics.Stopwatch s = new System.Diagnostics.Stopwatch();
             s.Start();
-            LoadOBJFile(pth);
+            //LoadOBJFile(pth);
             Debug.Log("OBJ load took " + s.ElapsedMilliseconds + "ms");
             s.Stop();
         }
@@ -81,13 +81,14 @@ public class OBJLoader
 
         return null;
     }
-    public static Material[] LoadMTLFile(string fn)
+    public static Material[] LoadMTLFile(string fn, Shader shader)
     {
         Material currentMaterial = null;
         List<Material> matlList = new List<Material>();
         FileInfo mtlFileInfo = new FileInfo(fn);
         string baseFileName = Path.GetFileNameWithoutExtension(fn);
         string mtlFileDirectory = mtlFileInfo.Directory.FullName + Path.DirectorySeparatorChar;
+
         foreach (string ln in File.ReadAllLines(fn))
         {
             string l = ln.Trim().Replace("  ", " ");
@@ -100,7 +101,7 @@ public class OBJLoader
                 {
                     matlList.Add(currentMaterial);
                 }
-                currentMaterial = new Material(Shader.Find("Standard (Specular setup)"));
+                currentMaterial = new Material(shader);
                 currentMaterial.name = data;
             }
             else if (cmps[0] == "Kd")
@@ -160,19 +161,18 @@ public class OBJLoader
                 float Ns = float.Parse(cmps[1]);
                 Ns = (Ns / 1000);
                 currentMaterial.SetFloat("_Glossiness", Ns);
-
             }
         }
-        if(currentMaterial != null)
+        if (currentMaterial != null)
         {
             matlList.Add(currentMaterial);
         }
+
         return matlList.ToArray();
     }
 
-    public static GameObject LoadOBJFile(string fn)
+    public static GameObject LoadOBJFile(string fn, Shader shader, out Vector3 offset)
     {
-
         string meshName = Path.GetFileNameWithoutExtension(fn);
 
         bool hasNormals = false;
@@ -195,7 +195,7 @@ public class OBJLoader
         Material[] materialCache = null;
         //save this info for later
         FileInfo OBJFileInfo = new FileInfo(fn);
-         
+
         foreach (string ln in File.ReadAllLines(fn))
         {
             if (ln.Length > 0 && ln[0] != '#')
@@ -208,8 +208,9 @@ public class OBJLoader
                 {
                     //load cache
                     string pth = OBJGetFilePath(data, OBJFileInfo.Directory.FullName + Path.DirectorySeparatorChar, meshName);
+
                     if (pth != null)
-                        materialCache = LoadMTLFile(pth);
+                        materialCache = LoadMTLFile(pth, shader);
 
                 }
                 else if ((cmps[0] == "g" || cmps[0] == "o") && splitByMaterial == false)
@@ -339,12 +340,22 @@ public class OBJLoader
             }
         }
 
+        //CUSTOM CODE: Process pivot offset for model
+        float xSum = 0, ySum = 0, zSum = 0;
+        for (int i = 0; i < vertices.Count; i++)
+        {
+            xSum += vertices[i].x;
+            ySum += vertices[i].y;
+            zSum += vertices[i].z;
+        }
+        offset = new Vector3(xSum / vertices.Count, ySum / vertices.Count, zSum / vertices.Count);
+        //END CUSTOM CODE
+
         if (objectNames.Count == 0)
             objectNames.Add("default");
        
         //build objects
         GameObject parentObject = new GameObject(meshName);
-        
         
         foreach (string obj in objectNames)
         {
@@ -433,14 +444,14 @@ public class OBJLoader
                 
                 if (materialCache == null)
                 {
-                    processedMaterials[i] = new Material(Shader.Find("Standard (Specular setup)"));
+                    processedMaterials[i] = new Material(shader);
                 }
                 else
                 {
                     Material mfn = Array.Find(materialCache, x => x.name == meshMaterialNames[i]); ;
                     if (mfn == null)
                     {
-                        processedMaterials[i] = new Material(Shader.Find("Standard (Specular setup)"));
+                        processedMaterials[i] = new Material(shader);
                     }
                     else
                     {

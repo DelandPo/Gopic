@@ -6,7 +6,9 @@ using UnityEngine.UI;
 
 public class ModelBrowser : MonoBehaviour {
     string localJsonFileName = "/localModels.json";
+    string localJsonFilePath;
     string cloudJsonFileName = "/cloudModels.json";
+    string cloudJsonFilePath;
 
     AllModels localModels; //All local model objects
     List<ModelPanel> localModelPanels;
@@ -35,6 +37,10 @@ public class ModelBrowser : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        localJsonFilePath = Application.persistentDataPath + localJsonFileName;
+        cloudJsonFilePath = Application.persistentDataPath + cloudJsonFileName;
+        //localJsonFilePath = Application.streamingAssetsPath + localJsonFileName;
+        //cloudJsonFilePath = Application.streamingAssetsPath + cloudJsonFileName;
         localModelPanels = new List<ModelPanel>();
         cloudModelPanels = new List<ModelPanel>();
         readLocalJSON(); //Load local model data
@@ -45,12 +51,9 @@ public class ModelBrowser : MonoBehaviour {
     //Gets local model data from local json file
     void readLocalJSON()
     {
-        string filePath = Application.streamingAssetsPath + localJsonFileName;
-        Debug.Log(filePath);
-
-        if (File.Exists(filePath))
+        if (File.Exists(localJsonFilePath))
         {
-            string dataAsJson = File.ReadAllText(filePath);
+            string dataAsJson = File.ReadAllText(localJsonFilePath);
             localModels = JsonUtility.FromJson<AllModels>(dataAsJson);
             populateModelBrowser(localModels, true);
         }
@@ -63,12 +66,9 @@ public class ModelBrowser : MonoBehaviour {
     //Gets cloud model data from cloud json file
     void readCloudJSON()
     {
-        string filePath = Application.streamingAssetsPath + cloudJsonFileName;
-        Debug.Log(filePath);
-
-        if (File.Exists(filePath))
+        if (File.Exists(cloudJsonFilePath))
         {
-            string dataAsJson = File.ReadAllText(filePath);
+            string dataAsJson = File.ReadAllText(cloudJsonFilePath);
             cloudModels = JsonUtility.FromJson<AllModels>(dataAsJson);
             populateModelBrowser(cloudModels, false);
         }
@@ -78,23 +78,42 @@ public class ModelBrowser : MonoBehaviour {
         }
     }
 
+    //Rewrites local json file to include new downloaded cloud model
+    public void updateLocalJSON(ModelData modelData, ModelPanel modelPanel)
+    {
+        localModels.Models.Add(modelData);
+        string jsonString = JsonUtility.ToJson(localModels); //Serialize json objects to json string
+        string filePath = Application.streamingAssetsPath + localJsonFileName;
+        File.WriteAllText(localJsonFilePath, jsonString); //Save json file
+        modelPanel.icon.texture = localIcon; //Show that model has been downloaded
+        for (int i = 0; i < localScrollArea.childCount; i++) //Destroy old model panels
+        {
+            GameObject panel = localScrollArea.GetChild(i).gameObject;
+            panel.SetActive(false); //Disabling it first is necessary, otherwise the layout group doesn't allow object to be deleted
+            Destroy(panel);
+        }
+        rightTabClicked(); //Switch to local browser
+        modelPanelsLoaded = false;
+        readLocalJSON(); //Update local model browser
+    }
+
     void populateModelBrowser(AllModels models, bool local)
     {
-        for (int i = 0; i < models.Models.Length; i++)
+        for (int i = 0; i < models.Models.Count; i++)
         {
             //Popluate the model panel
             if (local) //Local model
             {
                 GameObject modelPanel = Instantiate(modelPanelPrefab, modelPanelPrefab.transform.position, Quaternion.identity, localScrollArea.transform);
                 ModelPanel panel = modelPanel.GetComponent<ModelPanel>();
-                panel.populatePanel(models.Models[i], localIcon);
+                panel.populatePanel(this, models.Models[i], localIcon, true);
                 localModelPanels.Add(panel);
             }
             else //Cloud model
             {
                 GameObject modelPanel = Instantiate(modelPanelPrefab, modelPanelPrefab.transform.position, Quaternion.identity, cloudScrollArea.transform);
                 ModelPanel panel = modelPanel.GetComponent<ModelPanel>();
-                panel.populatePanel(models.Models[i], cloudIcon);
+                panel.populatePanel(this, models.Models[i], cloudIcon, false);
                 cloudModelPanels.Add(panel);
             }
         }
@@ -155,7 +174,10 @@ public class ModelBrowser : MonoBehaviour {
             leftTab.texture = lightLeft;
             rightTab.texture = darkRight;
             activeTab = 0;
-            displayActiveModels();
+            if (modelPanelsLoaded) //Don't switch tabs if model panels are still loading
+            {
+                displayActiveModels();
+            }
         }
     }
 
@@ -167,7 +189,10 @@ public class ModelBrowser : MonoBehaviour {
             leftTab.texture = darkLeft;
             rightTab.texture = lightRight;
             activeTab = 1;
-            displayActiveModels();
+            if (modelPanelsLoaded) //Don't switch tabs if model panels are still loading
+            {
+                displayActiveModels();
+            }
         }
     }
 	

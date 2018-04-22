@@ -15,6 +15,7 @@ public class ModelImporter : MonoBehaviour {
     bool modelPlaced = false;
     Vector3 offset;
     PivotAdjuster pivotAdjuster;
+    public float targetScale = 2f;
 
     //temp
     public UnityEngine.UI.Text debugText;
@@ -22,14 +23,13 @@ public class ModelImporter : MonoBehaviour {
     //DEMO
     public GameObject tobasco;
     public GameObject houses;
-    public GameObject mergeCube;
 
     // Use this for initialization
     void Start () {
         pivotAdjuster = FindObjectOfType<PivotAdjuster>();
         planeFinder = FindObjectOfType<PlaneFinderBehaviour>();
         contentPositioning = planeFinder.GetComponent<ContentPositioningBehaviour>();
-        debugText.text = Application.persistentDataPath;
+        //debugText.text = Application.persistentDataPath;
         //selectedModel = test;
         ////modelSelected = true;
         //selectedModel = tobasco;
@@ -39,6 +39,7 @@ public class ModelImporter : MonoBehaviour {
     //Import the obj model
     public IEnumerator importModel(string modelPath)
     {
+        modelPlaced = false;
         modelBrowserWindow.SetActive(false);
         selectedModel = OBJLoader.LoadOBJFile(modelPath, modelShader, out offset);
         if (selectedModel.transform.childCount > 0)
@@ -53,11 +54,15 @@ public class ModelImporter : MonoBehaviour {
             pivotAdjuster.adjustPivot(selectedModel.transform);
             selectedModel.transform.position = Vector3.zero;
         }
-        selectedModel.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f); //x is negative because obj's flipped on x-axis apparently
-        //selectedModel.transform.rotation = Quaternion.Euler(-12.392f, 70.361f, 21.459f);
 
-        yield return new WaitForSeconds(0.5f);
+        //Calculating mesh size
+        Renderer rend = selectedModel.GetComponentsInChildren<Renderer>()[0];
+        float diameter = rend.bounds.extents.magnitude * 2;
+        float scale = targetScale / diameter; //Calculates model scale to make it's diameter match the target scale (makes all model the same size)
+        selectedModel.transform.localScale = new Vector3(scale, scale, scale); //x is negative because obj's flipped on x-axis apparently
+
         modelSelected = true;
+        yield return null;
     }
 
     public void demoImportModel(string modelName)
@@ -68,18 +73,14 @@ public class ModelImporter : MonoBehaviour {
         {
             tobasco.SetActive(true);
             selectedModel = tobasco;
+            StartCoroutine(modelSelectedDelay());
         }
         else if (modelName == "Houses")
         {
             houses.SetActive(true);
             selectedModel = houses;
+            StartCoroutine(modelSelectedDelay());
         }
-        else if (modelName == "Merge Cube")
-        {
-            mergeCube.SetActive(true);
-            selectedModel = mergeCube;
-        }
-        StartCoroutine(modelSelectedDelay());
     }
 
     //Places object more accurately (time to think)
@@ -92,9 +93,18 @@ public class ModelImporter : MonoBehaviour {
     //Place the selected model on the ground plane
     public void placeOnGroundPlane(HitTestResult result)
     {
+        if (!modelPlaced)
+        {
+            debugText.text = "modelSelected: " + modelSelected + " modelBrowserWindow: " + modelBrowserWindow.activeSelf;
+        }
+        else
+        {
+            debugText.text = "Model Placed!" + " modelSelected: " + modelSelected + " modelBrowserWindow: " + modelBrowserWindow.activeSelf;
+        }
+
         if (!modelPlaced && modelSelected && !modelBrowserWindow.activeSelf)
         {
-            //debugText.text = selectedModel.name + " placed";
+            debugText.text = selectedModel.name + ": " + selectedModel.transform.position;
             selectedModel.SetActive(true);
             selectedModel.transform.SetParent(groundPlane); //Make ground plane parent of model
             contentPositioning.PositionContentAtPlaneAnchor(result); //Place model

@@ -47,9 +47,12 @@ public class ModelPanel : MonoBehaviour
             yield return www;
 
             doneLoading = true;
+            modelImg.color = Color.white;
             modelImg.texture = www.texture; //Get texture
 
+            //Debug.Log(modelData.Name + "width: " + www.texture.width + " height: " + www.texture.height);
             //modelImg.GetComponent<AspectRatioFitter>().aspectRatio = www.texture.width / www.texture.height;
+            //Debug.Log("Adjusted: " + modelData.Name + " aspect ratio");
         }
     }
 
@@ -78,8 +81,8 @@ public class ModelPanel : MonoBehaviour
     void importModel()
     {
         Debug.Log("import " + modelData.Name);
-        //StartCoroutine(modelImporter.importModel(modelData.ModelUri));
-        modelImporter.demoImportModel(modelData.Name);
+        StartCoroutine(modelImporter.importModel(modelData.ModelUri));
+        //modelImporter.demoImportModel(modelData.Name);
     }
 
     // Update is called once per frame

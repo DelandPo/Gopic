@@ -83,7 +83,6 @@ public class ModelBrowser : MonoBehaviour {
     {
         localModels.Models.Add(modelData);
         string jsonString = JsonUtility.ToJson(localModels); //Serialize json objects to json string
-        string filePath = Application.streamingAssetsPath + localJsonFileName;
         File.WriteAllText(localJsonFilePath, jsonString); //Save json file
         modelPanel.icon.texture = localIcon; //Show that model has been downloaded
         for (int i = 0; i < localScrollArea.childCount; i++) //Destroy old model panels

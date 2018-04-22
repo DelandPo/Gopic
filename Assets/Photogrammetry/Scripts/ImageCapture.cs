@@ -20,7 +20,6 @@ public class ImageCapture : MonoBehaviour
     AspectRatioFitter aspectFit;
     public GameObject cam; //AR Camera
     public GameObject startCapturingBtn; //Button that starts image capturing
-    bool startCapturing = false; //Indicates if image capturing should start
     public Slider captureProgress; //Progress bar that indicates how far along the capturing process is
     public GameObject doneCapturingIcon; //Icon that appears when all images have been captured
     public GameObject createModelPanel; //Panel that indicates that capturing was successful and allows the user to create the model
@@ -53,11 +52,11 @@ public class ImageCapture : MonoBehaviour
     float curVertCapReg; //Current vertical capture region
     bool needCapture = false; //Indicates if an image is needed in the device's current capture regions
     bool doneCapturing = false; //Indicates if all the required images have been captured
+    bool startCapturing = false; //Indicates if image capturing should start
 
     // Use this for initialization
     void Start()
     {
-        //TrackerManager.Instance.GetTracker<ObjectTracker>().Stop(); //Disabling Vuforia object tracker
         cameraBtn.gameObject.SetActive(false);
         aspectFit = imgViewer.GetComponent<AspectRatioFitter>();
         imgViewer.gameObject.SetActive(false);
@@ -83,7 +82,7 @@ public class ImageCapture : MonoBehaviour
     {
         if (capture) //Image capturing available
         {
-            recordCaptureInfo(); //Record device orientation at time of image capture
+            //recordCaptureInfo(); //Record device orientation at time of image capture
 
             //Capture image
             canvas.SetActive(false); //Hiding UI
@@ -373,8 +372,6 @@ public class ImageCapture : MonoBehaviour
                 doneCapturingIcon.SetActive(true);
                 createModelPanel.SetActive(true);
             }
-
-            debugText.text = "The required images have been captured!";
         }
     }
 }

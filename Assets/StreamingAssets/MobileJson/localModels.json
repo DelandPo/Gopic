@@ -2,25 +2,25 @@
     "Models":
     [
         {
-            "ModelUri":"/storage/emulated/0/Android/data/com.Company.photogrammetry/files/result.obj",
+            "ModelUri":"/storage/emulated/0/Android/data/com.Company.photogrammetry/files/Tobasco/result.obj",
             "Name":"Tobasco",
             "PicturesUri":"https://firebasestorage.googleapis.com/v0/b/photogrammetry-dfa81.appspot.com/o/Demo%2FIMG_20180411_134725%5B1%5D.jpg?alt=media&token=f6884e6c-69e4-49db-abbf-3306add63287",
             "Size":4,
             "UserId":"Ananda"
             },
             {
-                "ModelUri":"/storage/emulated/0/Android/data/com.Company.photogrammetry/files/result.obj",
+                "ModelUri":"/storage/emulated/0/Android/data/com.Company.photogrammetry/files/Houses/result.obj",
                 "Name":"Houses",
                 "PicturesUri":"https://firebasestorage.googleapis.com/v0/b/photogrammetry-dfa81.appspot.com/o/Demo%2FPic.JPG?alt=media&token=75d79cc9-fcc7-424c-ab43-a952643220ff",
                 "Size":2,
-                "UserId":"Marty"
+                "UserId":"Eric"
                 },
                 {
-                    "ModelUri":"/storage/emulated/0/Android/data/com.Company.photogrammetry/files/result.obj",
-                    "Name":"Water Bottle",
+                    "ModelUri":"/storage/emulated/0/Android/data/com.Company.photogrammetry/files/SaltShaker/result.obj",
+                    "Name":"Salt Shaker",
                     "PicturesUri":"https://images-na.ssl-images-amazon.com/images/I/51ix2X7WZOL._SL1000_.jpg",
                     "Size":1,
-                    "UserId":"Eric"
+                    "UserId":"Marty"
                     }
     ]
 }

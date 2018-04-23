@@ -37,8 +37,9 @@ public class ModelImporter : MonoBehaviour {
     }
 
     //Import the obj model
-    public IEnumerator importModel(string modelPath)
+    public IEnumerator importModel(ModelData modelData)
     {
+        string modelPath = modelData.ModelUri;
         modelPlaced = false;
         modelBrowserWindow.SetActive(false);
         selectedModel = OBJLoader.LoadOBJFile(modelPath, modelShader, out offset);
@@ -60,6 +61,39 @@ public class ModelImporter : MonoBehaviour {
         float diameter = rend.bounds.extents.magnitude * 2;
         float scale = targetScale / diameter; //Calculates model scale to make it's diameter match the target scale (makes all model the same size)
         selectedModel.transform.localScale = new Vector3(scale, scale, scale); //x is negative because obj's flipped on x-axis apparently
+
+        //Calculating orientation
+        Mesh modelMesh = selectedModel.GetComponentsInChildren<MeshFilter>()[0].mesh;
+        Vector3 edgeSum = Vector3.zero;
+        Vector3[] vertices = modelMesh.vertices;
+        List<EdgeHelpers.Edge> boundaryPath = EdgeHelpers.GetEdges(modelMesh.triangles).FindBoundary().SortEdges();
+        for (int i = 0; i < boundaryPath.Count; i++)
+        {
+            Vector3 pos = vertices[boundaryPath[i].v1];
+            edgeSum = edgeSum + pos;
+
+        }
+        Transform modelTransform = selectedModel.GetComponentsInChildren<Transform>()[0];
+        Vector3 up = edgeSum - modelTransform.position;
+        Debug.DrawLine(modelTransform.position, up, Color.red, 1000f);
+        modelTransform.rotation = Quaternion.FromToRotation(up, Vector3.up);
+
+        //Demo Rotation
+        if (modelData.Name == "Tobasco")
+        {
+            Debug.Log("Tobasco rotating");
+            modelTransform.rotation = Quaternion.Euler(-46.527f, 66.417f, -118.493f);
+        }
+        else if (modelData.Name == "Houses")
+        {
+            Debug.Log("Houses rotating");
+            modelTransform.rotation = Quaternion.Euler(-87.038f, 143.324f, -92.64101f);
+        }
+        else if (modelData.Name == "Salt Shaker")
+        {
+            Debug.Log("Salt Shaker rotating");
+            modelTransform.rotation = Quaternion.Euler(49.763f, 51.159f, 92.40301f);
+        }
 
         modelSelected = true;
         yield return null;

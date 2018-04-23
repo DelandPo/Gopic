@@ -81,7 +81,7 @@ public class ModelPanel : MonoBehaviour
     void importModel()
     {
         Debug.Log("import " + modelData.Name);
-        StartCoroutine(modelImporter.importModel(modelData.ModelUri));
+        StartCoroutine(modelImporter.importModel(modelData));
         //modelImporter.demoImportModel(modelData.Name);
     }
 

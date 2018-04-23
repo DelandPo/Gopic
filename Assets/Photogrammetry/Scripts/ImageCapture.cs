@@ -82,7 +82,7 @@ public class ImageCapture : MonoBehaviour
     {
         if (capture) //Image capturing available
         {
-            //recordCaptureInfo(); //Record device orientation at time of image capture
+            recordCaptureInfo(); //Record device orientation at time of image capture
 
             //Capture image
             canvas.SetActive(false); //Hiding UI
